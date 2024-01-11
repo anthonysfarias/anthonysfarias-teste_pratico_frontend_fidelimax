@@ -1,7 +1,8 @@
 {
-  "name": "my-project",
+  "name": "teste_pratico_frontend_fidelimax",
   "version": "0.1.0",
   "private": true,
+  "author": "Anthony S Farias",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
