@@ -1,11 +1,18 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Survey } from "@/app/interfaces/MainForm/types";
+// import { Survey } from "@/app/interfaces/MainForm/types";
+import RatingStars from "../components/RatingStars";
+import RatingDinamic from "../components/RatingDinamic";
+import RatingStatic from "../components/RatingStatic";
 
-const Form = () => {
+const Form: React.FC = () => {
+  const [rating, setRating] = useState(0);
 
-  const { data: itens, isLoading } = useQuery<Survey>({
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating);
+  };
+  const { data, isLoading } = useQuery<any>({
     queryKey: ["teste"],
     queryFn: () =>
       fetch(
@@ -16,9 +23,7 @@ const Form = () => {
   if (isLoading) {
     return <p>Carregando...</p>;
   }
-
-  const info = JSON.stringify(itens, null, 2);
-  
+  var survey = data.itens;
 
   return (
     <>
@@ -27,7 +32,36 @@ const Form = () => {
           Pesquisa de Satisfação
         </p>
         <div className="bg-white rounded-xl absolute top-44 p-6 w-full max-w-xl">
-          <form>{info}</form>
+          <form>
+            {survey.map((item: any) => (
+              <div key={item.typeQuestion}>
+                <p>
+                  {item.typeQuestion !== 4 ? item.content : ""}{" "}
+                  {item.mandatory === true ? "" : <p>Opcional</p>}
+                </p>
+                {item.typeQuestion === 1 ? (
+                  <RatingStars value={rating || item.answerValue} onChange={handleRatingChange} />
+                ) : item.typeQuestion === 2 ? (
+                  <RatingStatic value={item.answerValue} />
+                ) : item.typeQuestion === 3 ? (
+                  <textarea name="" id=""></textarea>
+                ) : item.typeQuestion === 4 ? (
+                  <select>
+                    <option value="">{item.content}</option>
+                  </select>
+                ) : item.typeQuestion === 5 ? (
+                  <RatingDinamic value={item?.itens} />
+                ) : item.typeQuestion === 6 ? (
+                  <RatingDinamic value={item?.itens} />
+                ) : (
+                  ""
+                )}
+              </div>
+            ))}
+          </form>
+          {/* {survey.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))} */}
         </div>
       </main>
     </>
